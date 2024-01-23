@@ -22,6 +22,7 @@ a:visited {
 button,
 ._btn,input[type="button"] {
   cursor: pointer;
+  background-color: #0080C1;
 }
 
 ul li {

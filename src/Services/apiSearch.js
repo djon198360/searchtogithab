@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { createQuery } from "../assets/utils";
+/* import { createQuery } from "../assets/utils"; */
 import { SERVER_URL } from "../Consts/Consts";
 
 export const apiSearch = createApi({
@@ -14,11 +14,11 @@ export const apiSearch = createApi({
     },
   }),
   endpoints: (builder) => ({
-    search: builder.query({
+    searchUser: builder.query({
       query: (query) => {
-        const querySearch = createQuery(query);
+        /* const querySearch = createQuery(query); */
         return {
-          url: `/ads/?${querySearch}`,
+          url: `?${query}`,
           method: "GET",
           headers: { "content-type": "application/json" },
         };
@@ -28,4 +28,4 @@ export const apiSearch = createApi({
   }),
 });
 
-export const { useSearchQuery } = apiSearch;
+export const { useSearchUserQuery } = apiSearch;
