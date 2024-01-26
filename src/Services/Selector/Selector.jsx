@@ -1,4 +1,5 @@
-const user = (store) => store.SliceAuth;
+const tempUsers = (store) => store.tempData;
+const userDataStore = (store) => store.apiSearch;
 
-export const isAuthSelector = (store) => user(store).isAuth || false;
-export const isState = (store) => user(store).isState || false;
+export const userData = (store) => userDataStore(store).queries;
+export const tempData = (store) => tempUsers(store).users.data;

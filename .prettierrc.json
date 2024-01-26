@@ -3,7 +3,7 @@
   "singleQuote": false,
   "endOfLine": "auto",
   "arrowParens": "always",
-  "max-len": ["warn", 200, 2],
+  "max-len": ["warn", 300, 2],
   "useTabs": false ,
   "trailingComma": "es5",
   "tabWidth": 2
