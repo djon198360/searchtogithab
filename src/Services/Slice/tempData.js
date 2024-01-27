@@ -3,10 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   users: [],
+  count: null,
   filters: [],
-  filterPerPage: 30,
-  filterGenre: [],
-  filterActivity: "По кол-ву подписчиков",
+  filterPerPage: "30",
+  filterRepositore: "desc",
+  filterActivity: "followers",
 };
 
 const tempData = createSlice({
@@ -14,17 +15,25 @@ const tempData = createSlice({
   initialState,
   reducers: {
     setTempDataUsers(state, action) {
-      state.users = action.payload;
+      state.users = action.payload.data;
+      state.count = action.payload.count;
     },
     setActivityFilter(state, action) {
       state.filterActivity = action.payload;
     },
-    setPerPage(state, action) {
+    setPerPageFilter(state, action) {
       state.filterPerPage = action.payload;
+    },
+    setRepositoreFilter(state, action) {
+      state.filterRepositore = action.payload;
     },
   },
 });
 
-export const { setTempDataUsers, setActivityFilter, setPerPage } =
-  tempData.actions;
+export const {
+  setTempDataUsers,
+  setActivityFilter,
+  setPerPageFilter,
+  setRepositoreFilter,
+} = tempData.actions;
 export default tempData.reducer;

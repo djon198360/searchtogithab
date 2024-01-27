@@ -1,4 +1,6 @@
+/* eslint-disable camelcase */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createQueryString } from "../assets/utils";
 import { SERVER_URL } from "../Consts/Consts";
 
 const checkResponse = (res) => {
@@ -38,8 +40,10 @@ export const apiSearch = createApi({
   endpoints: (builder) => ({
     getUser: builder.query({
       query: (query) => {
-        const { searchText } = query;
-        return { url: `?q=${searchText}&per_page=10` };
+        const { q, sort, order, per_page } = query;
+        const queryString = createQueryString({ q, sort, order, per_page });
+
+        return { url: `?${queryString}` }; // ?q=${searchText}&per_page=10` };
       },
       providesTags: (name) => [{ type: "Posts", name }],
     }),

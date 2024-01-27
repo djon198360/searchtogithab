@@ -1,6 +1,10 @@
 import { useState } from "react";
 import FilterPopapRender from "./FilterPopap";
-import { arrayActivity, arrayCountItems } from "../../Consts/ConstFilter";
+import {
+  arrayActivity,
+  arrayCountItems,
+  arrayRepositore,
+} from "../../Consts/ConstFilter";
 import * as S from "./Style";
 
 export const RenderFilter = () => {
@@ -20,12 +24,12 @@ export const RenderFilter = () => {
     <S.FilterBlock>
       <S.FilterItems>
         <S.BtnText
-          /* setFilter={isState.filter} */ onClick={() =>
-            handleFilter("perPage")
-          }
+          $state={isState.filter === "perPage" ? 1 : 0}
+          onClick={() => handleFilter("perPage")}
         >
           Кол-во пользователей
         </S.BtnText>
+
         {isState && isState.filter === "perPage" ? (
           <S.FilterPopap>
             <FilterPopapRender filter={isState.filter} data={arrayCountItems} />
@@ -35,22 +39,26 @@ export const RenderFilter = () => {
 
       <S.FilterItems>
         <S.BtnText
-          $state={isState.filter === "year" ? 1 : 0}
-          onClick={handleFilter}
+          $state={isState.filter === "repositore" ? 1 : 0}
+          onClick={() => handleFilter("repositore")}
         >
-          году выпуска
+          по количеству репозиториев
         </S.BtnText>
-        {isState && isState.filter === "year" ? (
+        {isState && isState.filter === "repositore" ? (
           <S.FilterPopap>
-            <FilterPopapRender event={isState.filter} />
+            <FilterPopapRender filter={isState.filter} data={arrayRepositore} />
           </S.FilterPopap>
         ) : null}
       </S.FilterItems>
 
       <S.FilterItems>
-        <S.BtnText onClick={() => handleFilter("activity")}>
+        <S.BtnText
+          $state={isState.filter === "activity" ? 1 : 0}
+          onClick={() => handleFilter("activity")}
+        >
           По активности
         </S.BtnText>
+
         {isState && isState.filter === "activity" ? (
           <S.FilterPopap>
             <FilterPopapRender filter={isState.filter} data={arrayActivity} />

@@ -7,7 +7,7 @@ export const FilterBlock = styled.div`
 `;
 
 export const FilterItems = styled.div`
-  position: relative;
+  /*  position: relative; */
 `;
 
 export const FilterButton = styled.div.attrs((props) => ({
@@ -41,7 +41,7 @@ export const BtnText = styled(FilterButton)`
 `;
 
 export const FilterPopap = styled.div`
-  /* position: absolute; */
+  position: absolute;
   color: #d3d3d3;
   display: inline-flex;
   flex-direction: column;
@@ -51,6 +51,7 @@ export const FilterPopap = styled.div`
   width: 13rem;
   padding: 34px;
   gap: 10px;
+  z-index: 2;
 `;
 
 export const CountFilter = styled.div`
