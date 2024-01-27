@@ -1,87 +1,88 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPerPage, setActivityFilter } from "../../Services/Slice/tempData";
-import { arrayCountItems } from "../../Consts/ConstFilter";
+import {
+  setPerPageFilter,
+  setActivityFilter,
+  setRepositoreFilter,
+} from "../../Services/Slice/tempData";
+/* import { filterUnicum } from "../../assets/utils"; */
 import * as S from "./Style";
 
 function FilterPopapRender({ filter, data }) {
   console.log(data, { filter });
   const dispatch = useDispatch();
-  const [perPageFilter, setPerPageFilter] = useState(
+
+  const [perPage, setPerPage] = useState(
     useSelector((state) => state?.tempData?.filterPerPage)
   );
-  const [filterGenre, setFilterGenre] = useState(
-    useSelector((state) => state?.tempData?.filterGenre)
+  const [repositore, setRepositore] = useState(
+    useSelector((state) => state?.tempData?.filterRepositore)
   );
   const [activity, setActivity] = useState(
     useSelector((state) => state?.tempData?.filterActivity)
   );
-  console.log(activity);
-  useEffect(() => {
-    dispatch(setPerPage(perPageFilter));
-  }, [perPageFilter]);
-
-  /*  useEffect(() => {
-    dispatch(setTempFilter(filterGenre));
-  }, [filterGenre]); */
 
   useEffect(() => {
-    console.log(activity);
+    dispatch(setPerPageFilter(perPage));
+  }, [perPage]);
+
+  useEffect(() => {
+    dispatch(setRepositoreFilter(repositore));
+  }, [repositore]);
+
+  useEffect(() => {
     dispatch(setActivityFilter(activity));
-  }, [activity, dispatch]);
+  }, [activity]);
+
   console.log(filter, data);
   switch (filter) {
     case "perPage":
       return (
         <S.FilterPopapItem>
           <S.FilterPopaptable>
-            <S.FilterPopapLink onClick={() => setPerPageFilter(30)}>
+            <S.FilterPopapLink onClick={() => setPerPage(30)}>
               По умолчанию
             </S.FilterPopapLink>
           </S.FilterPopaptable>
-          {arrayCountItems.map((perPage) => (
-            <S.FilterPopapContent key={perPage}>
+          {data.map((perPageValue) => (
+            <S.FilterPopapContent key={perPageValue}>
               <S.FilterPopapLink
-                onClick={() => setPerPageFilter(perPage)}
-                key={perPage}
+                onClick={() => setPerPage([perPageValue])}
+                key={perPageValue}
+                $state={Boolean(perPage.includes(perPageValue))}
               >
-                {perPage}
+                {perPageValue}
               </S.FilterPopapLink>
             </S.FilterPopapContent>
           ))}
         </S.FilterPopapItem>
       );
 
-    case "genre":
+    case "repositore":
       return (
         <S.FilterPopapItem>
-          {data
-            .map(({ genre }) => genre)
-            ?.map((genre) => (
-              <S.FilterPopapContent key={genre}>
-                <S.FilterPopapLink
-                  onClick={() =>
-                    !filterGenre.includes(genre)
-                      ? setFilterGenre([...filterGenre, genre])
-                      : setFilterGenre(
-                          filterGenre.filter((item) => item !== genre)
-                        )
-                  }
-                  $state={Boolean(filterGenre.includes(genre))}
-                >
-                  {genre}
-                </S.FilterPopapLink>
-              </S.FilterPopapContent>
-            ))}
+          {Object.entries(data).map(([key, value]) => (
+            <S.FilterPopapContent key={key}>
+              <S.FilterPopapLink
+                onClick={() => setRepositore(key)}
+                $state={Boolean(repositore.includes(key))}
+              >
+                {value}
+              </S.FilterPopapLink>
+            </S.FilterPopapContent>
+          ))}
         </S.FilterPopapItem>
       );
 
     case "activity":
       return (
         <S.FilterPopapItem>
-          {data.map((value) => (
-            <S.FilterPopapContent key={value}>
-              <S.FilterPopapLink onClick={() => setActivity(value)}>
+          {Object.entries(data).map(([key, value]) => (
+            <S.FilterPopapContent key={key}>
+              <S.FilterPopapLink
+                onClick={() => setActivity(key)}
+                $state={Boolean(activity.includes(key))}
+              >
                 {value}
               </S.FilterPopapLink>
             </S.FilterPopapContent>

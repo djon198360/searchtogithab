@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { RenderFilter } from "../../Components/Filter/Filter";
+import { RenderItem } from "../../Components/Item/Item";
 import { RenderSearchForm } from "../../Components/SearchForm/SearchForm";
+import { tempData } from "../../Services/Selector/Selector";
 import { setTempDataUsers } from "../../Services/Slice/tempData";
 import { useLazyGetUserQuery } from "../../Services/apiSearch";
-import { tempData } from "../../Services/Selector/Selector";
-import { RenderItem } from "../../Components/Item/Item";
-import { RenderFilter } from "../../Components/Filter/Filter";
 import * as S from "./Style";
 
 export const RenderMain = () => {
@@ -15,12 +15,25 @@ export const RenderMain = () => {
   const [infoMessage, setInfoMessage] = useState("");
   const [getUsersApi, { isLoading, isError }] = useLazyGetUserQuery();
   const tempDataUsers = useSelector(tempData);
+  const { filterPerPage, filterRepositore, filterActivity } = useSelector(
+    (state) => state?.tempData
+  );
 
   const handleButtonClick = async (e) => {
     e.preventDefault();
-    getUsersApi({ searchText })
+    getUsersApi({
+      q: searchText,
+      sort: filterActivity,
+      order: filterRepositore,
+      per_page: filterPerPage,
+    })
       .then((response) => {
-        dispatch(setTempDataUsers(response));
+        dispatch(
+          setTempDataUsers({
+            data: response.data.items,
+            count: response.data.total_count,
+          })
+        );
         if (response.error.status === "FETCH_ERROR") {
           setErrorMessage("FETCH_ERROR");
         }
@@ -52,7 +65,7 @@ export const RenderMain = () => {
 
       <S.ContentBlock>
         {tempDataUsers
-          ? Object(tempDataUsers.items).map((user) => (
+          ? tempDataUsers.map((user) => (
               <RenderItem key={user.id} user={user}></RenderItem>
             ))
           : null}
