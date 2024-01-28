@@ -40,8 +40,14 @@ export const apiSearch = createApi({
   endpoints: (builder) => ({
     getUser: builder.query({
       query: (query) => {
-        const { q, sort, order, per_page } = query;
-        const queryString = createQueryString({ q, sort, order, per_page });
+        const { q, sort, order, per_page, page } = query;
+        const queryString = createQueryString({
+          q,
+          sort,
+          order,
+          per_page,
+          page,
+        });
 
         return { url: `?${queryString}` }; // ?q=${searchText}&per_page=10` };
       },
