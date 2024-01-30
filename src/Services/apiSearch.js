@@ -3,28 +3,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createQueryString } from "../assets/utils";
 import { SERVER_URL } from "../Consts/Consts";
 
-const checkResponse = (res) => {
-  return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
-};
-
-export const getUsersByLoginBySortRepo = async ({
-  searchText,
-  sortType,
-  perPage,
-  page,
-}) => {
-  const res = await fetch(
-    `${SERVER_URL}?q=${searchText}&login&sort=repositories&order=${sortType}&per_page=${perPage}&page=${page}`,
-    {
-      method: "GET",
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    }
-  );
-  return checkResponse(res);
-};
-
 export const apiSearch = createApi({
   reducerPath: "apiSearch",
   baseQuery: fetchBaseQuery({
@@ -38,18 +16,40 @@ export const apiSearch = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getUser: builder.query({
+    getUsers: builder.query({
       query: (query) => {
-        const { q, sort, order, per_page } = query;
-        const queryString = createQueryString({ q, sort, order, per_page });
+        const { q, sort, order, per_page, page } = query;
+        const queryString = createQueryString({
+          q,
+          sort,
+          order,
+          per_page,
+          page,
+        });
 
-        return { url: `?${queryString}` }; // ?q=${searchText}&per_page=10` };
+        return { url: `search/users?${queryString}` };
       },
-      providesTags: (name) => [{ type: "Posts", name }],
+      providesTags: () => [{ type: "USER" }],
+    }),
+
+    getUserId: builder.query({
+      query: (query) => {
+        const { content } = query;
+        return { url: `users/${content}` };
+      },
+      providesTags: (name) => [{ type: "USERID", name }],
+    }),
+    getRepoUserId: builder.query({
+      query: ({ login }) => {
+        return { url: `users/${login}/repos` };
+      },
+      providesTags: (name) => [{ type: "USERREPO", name }],
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useLazyGetUserQuery } = apiSearch;
+export const {
+  useLazyGetUsersQuery,
+  useGetUserIdQuery,
+  useLazyGetRepoUserIdQuery,
+} = apiSearch;

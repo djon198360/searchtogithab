@@ -4,7 +4,9 @@ export const RenderHeader = () => {
   return (
     <S.Header>
       <S.Container>
-        <S.Logo src="../img/logo.png" alt="" />
+        <S.LogoLink to="/">
+          <S.Logo src="img/search.png" alt="" />
+        </S.LogoLink>
         <S.Nav></S.Nav>
       </S.Container>
     </S.Header>

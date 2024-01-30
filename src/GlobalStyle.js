@@ -25,6 +25,16 @@ button,
   background-color: #0080C1;
 }
 
+button, input, ._btn[type="button"]{
+  &:disabled{
+  background-color: #8e9599;
+  cursor: not-allowed;
+  border: #8e9599;
+  &:hover{  background-color: #8e9599;
+  cursor: not-allowed;}
+  }
+}
+
 ul li {
   list-style: none;
 }

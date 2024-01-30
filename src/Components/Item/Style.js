@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Item = styled.div`
@@ -15,9 +16,20 @@ export const Item = styled.div`
   }
 `;
 
-export const AvatarBlock = styled.div`
+export const ItemLink = styled(Link)`
   display: flex;
   width: 100%;
+  background-color: #009ee4;
+  height: 5rem;
+  gap: 0.3rem;
+  border-radius: 1rem;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const AvatarBlock = styled.div`
+  display: flex;
+  /*  width: 100%; */
   background-color: aliceblue;
   height: 4rem;
   margin: 0.3rem 0.1rem;
@@ -38,3 +50,5 @@ export const Avatar = styled.img.attrs((props) => ({
   height: inherit;
   background-size: cover;
 `;
+
+export const AvatarSpan = styled.span``;

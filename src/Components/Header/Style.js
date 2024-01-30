@@ -1,9 +1,14 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Header = styled.header`
   background-color: #009ee4;
 `;
-
+export const LogoLink = styled(Link)`
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
 export const Nav = styled.nav`
   max-width: 1440px;
   margin: 0 auto;
