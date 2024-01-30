@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const blockPagination = styled.div`
+export const blockPagination = styled.nav`
   width: 100%;
   display: flex;
   align-items: center;
@@ -63,6 +63,7 @@ export const nextButtonPagination = styled(Button)`
 
 export const buttonPagination = styled(Button).attrs((props) => ({
   key: props.key,
+  id: props.id,
 }))`
   color: ${(props) => (props.$primary ? "#000" : "rgba(0, 0, 0, 0.87)")};
   background-color: ${(props) => (props.$primary ? "#009ee4" : "transparent")};

@@ -40,7 +40,7 @@ function FilterPopapRender({ filter, data }) {
       return (
         <S.FilterPopapItem>
           <S.FilterPopaptable>
-            <S.FilterPopapLink onClick={() => setPerPage(30)}>
+            <S.FilterPopapLink onClick={() => setPerPage([30])}>
               По умолчанию
             </S.FilterPopapLink>
           </S.FilterPopaptable>

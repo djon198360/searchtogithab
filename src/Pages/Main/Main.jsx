@@ -4,33 +4,44 @@ import { RenderFilter } from "../../Components/Filter/Filter";
 import { RenderItem } from "../../Components/Item/Item";
 import { RenderSearchForm } from "../../Components/SearchForm/SearchForm";
 import { tempData } from "../../Services/Selector/Selector";
-import { setTempDataUsers } from "../../Services/Slice/tempData";
-import { useLazyGetUserQuery } from "../../Services/apiSearch";
+import {
+  setTempDataUsers,
+  setIsLoading,
+  setErrorMessage,
+} from "../../Services/Slice/tempData";
+import { useLazyGetUsersQuery } from "../../Services/apiSearch";
 import { Pagination } from "../../Components/Pagination/Pagination";
+import { RenderModal } from "../../Components/Modal/Modal";
 import * as S from "./Style";
 
 export const RenderMain = () => {
   const dispatch = useDispatch();
-  const [searchText, setSearchText] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [infoMessage, setInfoMessage] = useState("");
-  const [getUsersApi, { isLoading, isError }] = useLazyGetUserQuery();
-  const tempDataUsers = useSelector(tempData);
-  const { filterPerPage, filterRepositore, filterActivity, totalPages } =
-    useSelector((state) => state?.tempData);
-  const [currentPage, setCurrentPage] = useState(
-    useSelector((state) => state?.tempData.currentPage)
-  );
+  const {
+    filterPerPage,
+    filterRepositore,
+    filterActivity,
+    totalPages,
+    queryString,
+    currentPage,
+    totalCount,
+  } = useSelector((state) => state.tempData);
 
-  const handleButtonClick = async (e) => {
-    e?.preventDefault();
-    getUsersApi({
-      q: searchText,
+  const [searchText, setSearchText] = useState(queryString);
+  const [modalId, setModalId] = useState();
+  const [getUsersApi, { isLoading, isError, error }] = useLazyGetUsersQuery();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const tempDataUsers = useSelector(tempData);
+
+  const handleButtonClick = async ({ e, pageNumber }) => {
+    e.preventDefault();
+    const queryStrings = {
+      q: queryString,
       sort: filterActivity,
       order: filterRepositore,
       per_page: filterPerPage,
-      page: currentPage,
-    })
+      page: pageNumber ?? localStorage.getItem("pageNumber"),
+    };
+    getUsersApi(queryStrings)
       .then((response) => {
         dispatch(
           setTempDataUsers({
@@ -41,50 +52,93 @@ export const RenderMain = () => {
           })
         );
         if (response?.error?.status === "FETCH_ERROR") {
-          setErrorMessage("FETCH_ERROR");
+          dispatch(setErrorMessage("FETCH_ERROR"));
         }
         if (response?.error?.status === Number(401)) {
-          setErrorMessage("Request limit exceeded");
+          dispatch(setErrorMessage("Request limit exceeded"));
         }
         if (response?.data?.items?.length === 0) {
-          setInfoMessage("Not found user");
+          dispatch(setErrorMessage("Not found user"));
         }
       })
-      .catch((errors) => setInfoMessage(errors))
+      .catch(
+        () => {
+          //  return dispatch(setErrorMessage(errorMessage));
+        }
+        /* setError(`Ошибка получения пользователей `) */
+      )
       .finally();
   };
-
+  if (error || isError) {
+    console.log(error.error);
+    dispatch(setErrorMessage(error.error, true));
+  }
+  useEffect(() => {}, [currentPage, totalPages, searchText, dispatch]);
   useEffect(() => {
-    console.log(currentPage);
-  }, [currentPage]);
+    const setLoading = () => {
+      dispatch(setIsLoading(isLoading));
+    };
+    setLoading();
+  }, [isLoading]);
 
+  /*   if (isError) {
+    return dispatch(setErrorMessage("Ошибка получения пользователей"));
+  } */
   return (
     <S.Main>
-      {isLoading ? "loading" : null}
-      {isError ? "errors " : null}
-      {infoMessage}
-      {errorMessage}
+      {isModalVisible ? (
+        <RenderModal
+          isVisible={isModalVisible}
+          content={modalId}
+          onClose={() => setIsModalVisible(false)}
+        ></RenderModal>
+      ) : null}
+      {/*  {errorMessage} */}
       <RenderSearchForm
         searchText={searchText}
         setSearchText={(e) => setSearchText(e)}
-        setButtonClick={(e) => handleButtonClick(e)}
+        setButtonClick={(e) => {
+          handleButtonClick(e);
+        }}
       />
       <S.FilterBlock>
         <RenderFilter />
       </S.FilterBlock>
-
+      <Pagination
+        handleButtonClick={(e) => {
+          handleButtonClick(e);
+        }}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        queryText={searchText}
+        filterPerPage={filterPerPage}
+      ></Pagination>
       <S.ContentBlock>
         {tempDataUsers
           ? tempDataUsers.map((user) => (
-              <RenderItem key={user.id} user={user}></RenderItem>
+              <RenderItem
+                key={user.id}
+                user={user}
+                setModalId={() => {
+                  setModalId(user.login);
+                }}
+                modal={() => {
+                  setIsModalVisible(true);
+                }}
+              ></RenderItem>
             ))
           : null}
       </S.ContentBlock>
       <Pagination
-        handleButtonClick={() => handleButtonClick()}
-        setCurrentPage={(e) => setCurrentPage(e)}
+        handleButtonClick={(e) => {
+          handleButtonClick(e);
+        }}
         currentPage={currentPage}
         totalPages={totalPages}
+        totalCount={totalCount}
+        queryText={searchText}
+        filterPerPage={filterPerPage}
       ></Pagination>
     </S.Main>
   );

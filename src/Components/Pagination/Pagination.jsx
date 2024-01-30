@@ -1,78 +1,51 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable react/no-array-index-key */
-/* import { useState, useEffect } from "react"; */
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setCurrentPage } from "../../Services/Slice/tempData";
+import { getPagesArray, setPrimary } from "../../assets/utils";
 import * as S from "./Style";
 
 export const Pagination = ({
-  setCurrentPage,
-  handleButtonClick,
+  totalPages,
   currentPage,
+  handleButtonClick,
+  filterPerPage,
 }) => {
-  const { totalPages /* filterPerPage, currentPage, users  , totalCount */ } =
-    useSelector((state) => state?.tempData);
-
-  /*   const lastPage = currentPage * filterPerPage;
-  const first = lastPage - filterPerPage;
-  const current = users.splice(first, lastPage);
-  console.log(current); */
-  /*  const pages = [];
-
-  for (let index = 1; index < totalPages; index++) {
-    pages.push(index);
-  } */
-
-  const delta = window.innerWidth <= 460 ? 1 : 2;
-  console.log(window.innerWidth <= 460);
-  const pages = [];
-
-  for (
-    let i = Math.max(2, currentPage - delta);
-    i <= Math.min(totalPages - 1, currentPage + delta);
-    i++
-  ) {
-    console.log(i);
-    pages.push(i);
-  }
-
-  if (currentPage - delta > 2) {
-    pages.unshift("...");
-  }
-
-  if (currentPage + delta < totalPages - 1) {
-    pages.push("...");
-  }
-
-  pages.unshift(1);
-
-  if (totalPages > 1) {
-    pages.push(totalPages);
-  }
-
-  const setPrimary = (a, b) => {
-    return a === b;
+  const dispatch = useDispatch();
+  const handleButtonClicks = ({ e, pageNumber }) => {
+    dispatch(setCurrentPage(pageNumber));
+    handleButtonClick({ e, pageNumber });
   };
+  const prevLink = currentPage - 1;
+  const nextLink = currentPage + 1;
 
-  return totalPages > 0 ? (
+  return totalPages > 0 && totalPages > filterPerPage ? (
     <S.blockPagination>
-      <S.prevButtonPagination></S.prevButtonPagination>
-      {pages?.length > 0 &&
-        pages.map((num) => (
+      <S.prevButtonPagination
+        onClick={(e) => {
+          handleButtonClicks({ e, pageNumber: prevLink });
+        }}
+        disabled={currentPage - 1 > 0 ? null : true}
+      ></S.prevButtonPagination>
+      {totalPages &&
+        getPagesArray({ currentPage, totalPages }).map((pageNumber) => (
           <S.buttonPagination
-            $primary={setPrimary(num, currentPage)}
-            key={num}
-            onClick={() => {
-              setCurrentPage(num);
-              handleButtonClick();
+            type="submit"
+            id={pageNumber}
+            $primary={setPrimary(pageNumber, currentPage)}
+            key={pageNumber}
+            onClick={(e) => {
+              handleButtonClicks({ e, pageNumber });
             }}
           >
-            {num}
-            {setPrimary(num, currentPage)}
+            {pageNumber}
           </S.buttonPagination>
         ))}
-      <S.nextButtonPagination></S.nextButtonPagination>
+      <S.nextButtonPagination
+        type="submit"
+        onClick={(e) => {
+          handleButtonClicks({ e, pageNumber: nextLink });
+        }}
+        disabled={currentPage + 1 < totalPages ? null : true}
+      ></S.nextButtonPagination>
     </S.blockPagination>
-  ) : (
-    <S.blockPagination></S.blockPagination>
-  );
+  ) : null;
 };

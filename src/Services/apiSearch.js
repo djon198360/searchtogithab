@@ -38,7 +38,7 @@ export const apiSearch = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getUser: builder.query({
+    getUsers: builder.query({
       query: (query) => {
         const { q, sort, order, per_page, page } = query;
         const queryString = createQueryString({
@@ -49,13 +49,29 @@ export const apiSearch = createApi({
           page,
         });
 
-        return { url: `?${queryString}` }; // ?q=${searchText}&per_page=10` };
+        return { url: `search/users?${queryString}` };
       },
-      providesTags: (name) => [{ type: "Posts", name }],
+      providesTags: () => [{ type: "USER" }],
+    }),
+
+    getUserId: builder.query({
+      query: (query) => {
+        const { content } = query;
+        return { url: `users/${content}` };
+      },
+      providesTags: (name) => [{ type: "USERID", name }],
+    }),
+    getRepoUserId: builder.query({
+      query: ({ login }) => {
+        return { url: `users/${login}/repos` };
+      },
+      providesTags: (name) => [{ type: "USERREPO", name }],
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useLazyGetUserQuery } = apiSearch;
+export const {
+  useLazyGetUsersQuery,
+  useGetUserIdQuery,
+  useLazyGetRepoUserIdQuery,
+} = apiSearch;
