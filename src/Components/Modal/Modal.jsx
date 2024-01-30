@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setIsLoading, setErrorMessage } from "../../Services/Slice/tempData";
+import {
+  setIsLoading /* , setErrorMessage */,
+} from "../../Services/Slice/tempData";
 import {
   useGetUserIdQuery,
   useLazyGetRepoUserIdQuery,
@@ -11,7 +13,7 @@ import * as S from "./Style";
 
 export const RenderModal = ({ isVisible = false, onClose, content }) => {
   const dispatch = useDispatch();
-  const { isLoading, data, error } = useGetUserIdQuery({ content });
+  const { isLoading, data } = useGetUserIdQuery({ content });
   const [getRepo, { isLoading: loading }] = useLazyGetRepoUserIdQuery();
   const [repoData, setRepoData] = useState();
 
@@ -19,9 +21,9 @@ export const RenderModal = ({ isVisible = false, onClose, content }) => {
     dispatch(setIsLoading(isLoading));
   }, [isLoading, loading]);
 
-  useEffect(() => {
-    dispatch(setErrorMessage("Произошла ошибка , попробуйте позжеc!"));
-  }, [error]);
+  /*  useEffect(() => {
+    dispatch(setErrorMessage(`Произошла ошибка , попробуйте позже!`));
+  }, [error]); */
 
   if (data) {
     const {

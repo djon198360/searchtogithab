@@ -15,7 +15,7 @@ export const RenderSearchForm = ({ setButtonClick }) => {
   useEffect(() => {
     dispatch(setQueryString(queryText));
     dispatch(setCurrentPage(pageNumber));
-  }, [dispatch, queryText]);
+  }, [queryText]);
   return (
     <S.SearchBlock>
       <S.Form
