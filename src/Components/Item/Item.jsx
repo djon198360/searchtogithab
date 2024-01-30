@@ -2,13 +2,12 @@
 
 import * as S from "./Style";
 
-export const RenderItem = ({ user, modal, setModalId }) => {
+export const RenderItem = ({ user, modal, setModalIdUser }) => {
   const { avatar_url, login } = user;
   return (
     <S.ItemLink
-      /* to={`profile/${login}`} */
       onClick={() => {
-        setModalId(login);
+        setModalIdUser(login);
         modal(true);
       }}
     >

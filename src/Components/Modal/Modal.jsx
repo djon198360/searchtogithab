@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setIsLoading } from "../../Services/Slice/tempData";
+import { setIsLoading, setErrorMessage } from "../../Services/Slice/tempData";
 import {
   useGetUserIdQuery,
   useLazyGetRepoUserIdQuery,
@@ -12,14 +12,17 @@ import * as S from "./Style";
 export const RenderModal = ({ isVisible = false, onClose, content }) => {
   const dispatch = useDispatch();
   const { isLoading, data, error } = useGetUserIdQuery({ content });
-  const [getRepo, { loading }] = useLazyGetRepoUserIdQuery();
+  const [getRepo, { isLoading: loading }] = useLazyGetRepoUserIdQuery();
   const [repoData, setRepoData] = useState();
-  console.log(error);
-  console.log(getRepo);
+
   useEffect(() => {
     dispatch(setIsLoading(isLoading));
-  }, [isLoading]);
-  console.log(loading);
+  }, [isLoading, loading]);
+
+  useEffect(() => {
+    dispatch(setErrorMessage("Произошла ошибка , попробуйте позжеc!"));
+  }, [error]);
+
   if (data) {
     const {
       login,
@@ -37,7 +40,7 @@ export const RenderModal = ({ isVisible = false, onClose, content }) => {
       const result = await getRepo({ login });
       setRepoData(result.data);
     };
-    console.log(repoData);
+
     return (
       isVisible &&
       data && (
@@ -91,7 +94,9 @@ export const RenderModal = ({ isVisible = false, onClose, content }) => {
                 </S.ModalProfileBlock>
                 {repoData
                   ? repoData.map((repo) => (
-                      <S.ProfileLabel>{repo.name}</S.ProfileLabel>
+                      <S.ProfileLabel key={Math.random()}>
+                        {repo.name}
+                      </S.ProfileLabel>
                     ))
                   : null}
               </S.ModalContent>

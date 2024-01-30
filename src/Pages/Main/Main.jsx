@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RenderFilter } from "../../Components/Filter/Filter";
 import { RenderItem } from "../../Components/Item/Item";
 import { RenderSearchForm } from "../../Components/SearchForm/SearchForm";
-import { tempData } from "../../Services/Selector/Selector";
 import {
   setTempDataUsers,
   setIsLoading,
@@ -17,6 +16,7 @@ import * as S from "./Style";
 export const RenderMain = () => {
   const dispatch = useDispatch();
   const {
+    users,
     filterPerPage,
     filterRepositore,
     filterActivity,
@@ -26,11 +26,10 @@ export const RenderMain = () => {
     totalCount,
   } = useSelector((state) => state.tempData);
 
+  const [getUsersApi, { isLoading }] = useLazyGetUsersQuery();
   const [searchText, setSearchText] = useState(queryString);
-  const [modalId, setModalId] = useState();
-  const [getUsersApi, { isLoading, isError, error }] = useLazyGetUsersQuery();
+  const [modalIdUser, setModalIdUser] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const tempDataUsers = useSelector(tempData);
 
   const handleButtonClick = async ({ e, pageNumber }) => {
     e.preventDefault();
@@ -39,7 +38,7 @@ export const RenderMain = () => {
       sort: filterActivity,
       order: filterRepositore,
       per_page: filterPerPage,
-      page: pageNumber ?? localStorage.getItem("pageNumber"),
+      page: pageNumber,
     };
     getUsersApi(queryStrings)
       .then((response) => {
@@ -61,39 +60,29 @@ export const RenderMain = () => {
           dispatch(setErrorMessage("Not found user"));
         }
       })
-      .catch(
-        () => {
-          //  return dispatch(setErrorMessage(errorMessage));
-        }
-        /* setError(`Ошибка получения пользователей `) */
-      )
+      .catch(() => {
+        return dispatch(
+          setErrorMessage("Произошла ошибка , попробуйте позже!")
+        );
+      })
       .finally();
   };
-  if (error || isError) {
-    console.log(error.error);
-    dispatch(setErrorMessage(error.error, true));
-  }
-  useEffect(() => {}, [currentPage, totalPages, searchText, dispatch]);
+
+  useEffect(() => {}, [currentPage, totalPages, searchText]);
   useEffect(() => {
-    const setLoading = () => {
-      dispatch(setIsLoading(isLoading));
-    };
-    setLoading();
+    dispatch(setIsLoading(isLoading));
   }, [isLoading]);
 
-  /*   if (isError) {
-    return dispatch(setErrorMessage("Ошибка получения пользователей"));
-  } */
   return (
     <S.Main>
       {isModalVisible ? (
         <RenderModal
+          key={Math.random()}
           isVisible={isModalVisible}
-          content={modalId}
+          content={modalIdUser}
           onClose={() => setIsModalVisible(false)}
         ></RenderModal>
       ) : null}
-      {/*  {errorMessage} */}
       <RenderSearchForm
         searchText={searchText}
         setSearchText={(e) => setSearchText(e)}
@@ -115,13 +104,13 @@ export const RenderMain = () => {
         filterPerPage={filterPerPage}
       ></Pagination>
       <S.ContentBlock>
-        {tempDataUsers
-          ? tempDataUsers.map((user) => (
+        {users
+          ? users.map((user) => (
               <RenderItem
                 key={user.id}
                 user={user}
-                setModalId={() => {
-                  setModalId(user.login);
+                setModalIdUser={() => {
+                  setModalIdUser(user.login);
                 }}
                 modal={() => {
                   setIsModalVisible(true);

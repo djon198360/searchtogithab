@@ -3,28 +3,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createQueryString } from "../assets/utils";
 import { SERVER_URL } from "../Consts/Consts";
 
-const checkResponse = (res) => {
-  return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
-};
-
-export const getUsersByLoginBySortRepo = async ({
-  searchText,
-  sortType,
-  perPage,
-  page,
-}) => {
-  const res = await fetch(
-    `${SERVER_URL}?q=${searchText}&login&sort=repositories&order=${sortType}&per_page=${perPage}&page=${page}`,
-    {
-      method: "GET",
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    }
-  );
-  return checkResponse(res);
-};
-
 export const apiSearch = createApi({
   reducerPath: "apiSearch",
   baseQuery: fetchBaseQuery({

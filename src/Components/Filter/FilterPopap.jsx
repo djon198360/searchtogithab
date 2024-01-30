@@ -5,13 +5,10 @@ import {
   setActivityFilter,
   setRepositoreFilter,
 } from "../../Services/Slice/tempData";
-/* import { filterUnicum } from "../../assets/utils"; */
 import * as S from "./Style";
 
 function FilterPopapRender({ filter, data }) {
-  console.log(data, { filter });
   const dispatch = useDispatch();
-
   const [perPage, setPerPage] = useState(
     useSelector((state) => state?.tempData?.filterPerPage)
   );
@@ -34,7 +31,6 @@ function FilterPopapRender({ filter, data }) {
     dispatch(setActivityFilter(activity));
   }, [activity]);
 
-  console.log(filter, data);
   switch (filter) {
     case "perPage":
       return (

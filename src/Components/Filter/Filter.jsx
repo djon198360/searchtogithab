@@ -18,7 +18,6 @@ export const RenderFilter = () => {
       setState({ filter: popapName, isChecked: true });
     }
   };
-  console.log(isState);
 
   return (
     <S.FilterBlock>

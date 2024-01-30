@@ -28,8 +28,8 @@ const tempData = createSlice({
       state.error = true;
     },
     clearErrorMessage(state, action) {
-      state.errorMessage = action.payload;
-      state.error = false;
+      state.errorMessage = "";
+      state.error = action.payload;
     },
     setTempDataUsers(state, action) {
       state.users = action.payload.data;

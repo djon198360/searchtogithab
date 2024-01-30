@@ -18,9 +18,6 @@ export const RenderSearchForm = ({ setButtonClick }) => {
   }, [dispatch, queryText]);
   return (
     <S.SearchBlock>
-      <S.LogoLink to="/profile">
-        <S.Logo src="../img/search.png" />
-      </S.LogoLink>
       <S.Form
         onSubmit={(e) => {
           handleButtonClick(e);
