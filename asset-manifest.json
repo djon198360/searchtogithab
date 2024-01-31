@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/searchtogithab/static/css/main.e6c13ad2.css",
+    "main.js": "/searchtogithab/static/js/main.6b17a057.js",
+    "index.html": "/searchtogithab/index.html",
+    "main.e6c13ad2.css.map": "/searchtogithab/static/css/main.e6c13ad2.css.map",
+    "main.6b17a057.js.map": "/searchtogithab/static/js/main.6b17a057.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.6b17a057.js"
+  ]
+}
